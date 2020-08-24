@@ -44,7 +44,8 @@ defmodule News.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:mongodb, "~> 0.5.1"},
-      {:tesla, "~> 1.3.0"}
+      {:tesla, "~> 1.3.0"},
+      {:poison, "~> 3.1"}
     ]
   end
 

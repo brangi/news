@@ -1,4 +1,4 @@
-defmodule News.FetcherSourceOne do
+defmodule News.AggregatorsJobs.Nfl do
   use GenServer
 
   def start_link(_) do
@@ -7,19 +7,19 @@ defmodule News.FetcherSourceOne do
 
   @impl true
   def init(state) do
-    schedule_fetcher_one()
+    schedule_agg()
     {:ok, state}
   end
 
   @impl true
   def handle_info(:work, state) do
     IO.puts("Fetching....")
-    schedule_fetcher_one()
+    schedule_agg()
 
     {:noreply, state}
   end
 
-  defp schedule_fetcher_one do
+  defp schedule_agg do
     Process.send_after(self(), :work, 1 * 60 * 60 * 1000)
   end
 end

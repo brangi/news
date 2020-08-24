@@ -17,7 +17,7 @@ defmodule News.Application do
       NewsWeb.Endpoint,
       # Start a worker by calling: News.Worker.start_link(arg)
       # {News.Worker, arg}
-      {News.FetcherSourceOne, []},
+      # {News.Aggregators.Nfl, []},
       {Mongo, [name: :mongo, database: "news", pool_size: 10]}
     ]
 
