@@ -1,4 +1,4 @@
-defmodule News.AggregatorsJobs.Nfl do
+defmodule News.Jobs.Fetcher do
   use GenServer
 
   def start_link(_) do
