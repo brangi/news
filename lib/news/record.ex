@@ -2,5 +2,10 @@ defmodule News.Record do
   defstruct source: nil,
             title: "",
             author: "",
-            url: ""
+            url: "",
+            slug: "",
+            image: nil,
+            content: nil,
+            description: "",
+            publishedAt: nil
 end
