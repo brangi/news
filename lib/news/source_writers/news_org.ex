@@ -1,13 +1,14 @@
 defmodule News.SourceWriters.NewsOrg do
   alias News.Record
+  alias News.Util.UtilsTime
 
-  def resolve do
+  def resolve(search_query) do
     #TODO refine searches and customize it from config
     url = Application.fetch_env!(:news, :test_url) ## News Org
-    {:ok, response_body} = Tesla.get(url)
+    #{:ok, response_body} = Tesla.get(build_url(search_query))
     #response_body  = Poison.decode!(Application.fetch_env!(:news, :test_res))
-    news_articles = Poison.decode!(response_body.body)
-    write_records(news_articles["articles"])
+    #news_articles = Poison.decode!(response_body.body)
+    #write_records(news_articles["articles"])
   end
 
   defp write_records(results) do
@@ -40,4 +41,14 @@ defmodule News.SourceWriters.NewsOrg do
       String.replace(~r/ +/, "-")
   end
 
+  defp build_url(q) do
+     url_base = Application.fetch_env!(:news, :url_api)
+     query = q
+     from = UtilsTime.input_search_time()
+     p = Application.fetch_env!(:news, :default_params)
+     api_key = "&apiKey=#{p["apiKey"]}"
+     default_params = "&sortBy=#{p["publishedAt"]}&language=#{p["language"]}&pageSize=#{p["pageSize"]}"
+     base = "#{url_base}q=#{query}&from#{from}"
+     "#{base}#{default_params}#{api_key}"
+  end
 end
