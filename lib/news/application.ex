@@ -19,8 +19,7 @@ defmodule News.Application do
       # {News.Worker, arg}
       # {News.Aggregators.Nfl, []},
       {Mongo, [name: :mongo, database: "news", pool_size: 10]}
-    ] ++ [{News.Jobs.Fetcher, []}] ## Dynamically add all queries
-
+    ] ++ News.Jobs.Init.all_categories() ## Dynamically add all queries
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: News.Supervisor]

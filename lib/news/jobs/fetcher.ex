@@ -1,8 +1,8 @@
 defmodule News.Jobs.Fetcher do
   use GenServer
 
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, %{})
+  def start_link(s) do
+    GenServer.start_link(__MODULE__, %{search_query: s})
   end
 
   @impl true
@@ -13,9 +13,9 @@ defmodule News.Jobs.Fetcher do
 
   @impl true
   def handle_info(:work, state) do
-    IO.puts("Fetching....")
+    IO.puts("Fetching")
+    IO.inspect(state)
     schedule_agg()
-
     {:noreply, state}
   end
 

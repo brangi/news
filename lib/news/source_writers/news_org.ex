@@ -3,11 +3,11 @@ defmodule News.SourceWriters.NewsOrg do
 
   def resolve do
     #TODO refine searches and customize it from config
-    #url = Application.fetch_env!(:news, :test_url) ## News Org
-    #{:ok, response_body} = Tesla.get(url)
+    url = Application.fetch_env!(:news, :test_url) ## News Org
+    {:ok, response_body} = Tesla.get(url)
     #response_body  = Poison.decode!(Application.fetch_env!(:news, :test_res))
-    #news_articles = Poison.decode!(response_body.body)
-    #write_records(news_articles["articles"])
+    news_articles = Poison.decode!(response_body.body)
+    write_records(news_articles["articles"])
   end
 
   defp write_records(results) do
@@ -17,7 +17,7 @@ defmodule News.SourceWriters.NewsOrg do
           title: article["title"],
           url: article["url"],
           author: article["author"] || article["source"]["name"],
-          slug: String.replace(article["title"], ~r/[^a-zA-Z]/, "-"),
+          slug: set_slug(article["title"]),
           source: article["source"]["name"],
           image: article["urlToImage"],
           content: article["content"],
@@ -32,6 +32,12 @@ defmodule News.SourceWriters.NewsOrg do
   defp get_published_at(a) do
     {_, published_at, _} = DateTime.from_iso8601(a["publishedAt"])
     published_at
+  end
+
+  defp set_slug(a) do
+    String.replace(a, ~r/[^a-zA-Z]/, " ") |>
+      String.downcase |>
+      String.replace(~r/ +/, "-")
   end
 
 end
