@@ -3,6 +3,8 @@ defmodule News.Jobs.Init do
   @moduledoc false
   def all_categories do
     if Application.fetch_env!(:news, :app_env) === "staging" do
+      {:ok, conn} = Mongo.start_link(url: "mongodb://localhost:27017/news")
+      ensure_uniq(conn)
       Enum.map ["nfl","nba","mls","soccer"], fn(c) ->
         Supervisor.child_spec({Fetcher, c}, id: String.to_atom(c))
       end
