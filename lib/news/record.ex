@@ -1,6 +1,7 @@
 defmodule News.Record do
   defstruct source: nil,
             title: "",
+            sport: "",
             author: "",
             url: "",
             slug: "",

@@ -8,18 +8,19 @@ defmodule News.SourceWriters.NewsOrg do
     {:ok, response_body} = Tesla.get(build_url(search_query))
     #response_body  = Poison.decode!(Application.fetch_env!(:news, :test_res))
     news_articles = Poison.decode!(response_body.body)
-    Enum.map build_records(news_articles["articles"]), fn(a) ->
+    Enum.map build_records(news_articles["articles"], search_query), fn(a) ->
       {result, _} = Mongo.insert_one(:mongo, "articles", a)
       IO.inspect(result)
     end
   end
 
-  defp build_records(results) do
+  defp build_records(results, sport) do
     del_records = Enum.map results, fn(article) ->
       if(article["title"] != nil and article["urlToImage"] != nil) do
         %Record{
           title: article["title"],
           url: article["url"],
+          sport: sport,
           author: article["author"] || article["source"]["name"],
           slug: set_slug(article["title"]),
           source: article["source"]["name"],
