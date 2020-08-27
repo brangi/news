@@ -16,7 +16,7 @@ defmodule News.Jobs.Fetcher do
   def handle_info(:work, state) do
     IO.puts("Fetching")
     IO.inspect(state)
-    NewsOrg.resolve(state["search_query"])
+    NewsOrg.resolve(state[:search_query])
     schedule_agg()
     {:noreply, state}
   end
