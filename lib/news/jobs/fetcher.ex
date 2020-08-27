@@ -1,5 +1,6 @@
 defmodule News.Jobs.Fetcher do
   use GenServer
+  alias News.SourceWriters.NewsOrg
 
   def start_link(s) do
     GenServer.start_link(__MODULE__, %{search_query: s})
@@ -15,6 +16,7 @@ defmodule News.Jobs.Fetcher do
   def handle_info(:work, state) do
     IO.puts("Fetching")
     IO.inspect(state)
+    NewsOrg.resolve(state["search_query"])
     schedule_agg()
     {:noreply, state}
   end
