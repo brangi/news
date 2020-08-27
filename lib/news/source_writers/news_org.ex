@@ -4,14 +4,17 @@ defmodule News.SourceWriters.NewsOrg do
 
   def resolve(search_query) do
     #TODO refine searches and customize it from config
-    url = Application.fetch_env!(:news, :test_url) ## News Org
-    #{:ok, response_body} = Tesla.get(build_url(search_query))
+    #url = Application.fetch_env!(:news, :test_url) ## News Org
+    {:ok, response_body} = Tesla.get(build_url(search_query))
     #response_body  = Poison.decode!(Application.fetch_env!(:news, :test_res))
-    #news_articles = Poison.decode!(response_body.body)
-    #write_records(news_articles["articles"])
+    news_articles = Poison.decode!(response_body.body)
+    Enum.map build_records(news_articles["articles"]), fn(a) ->
+      {result, _} = Mongo.insert_one(:mongo, "articles", a)
+      IO.inspect(result)
+    end
   end
 
-  defp write_records(results) do
+  defp build_records(results) do
     del_records = Enum.map results, fn(article) ->
       if(article["title"] != nil and article["urlToImage"] != nil) do
         %Record{
@@ -47,7 +50,7 @@ defmodule News.SourceWriters.NewsOrg do
      from = UtilsTime.input_search_time()
      p = Application.fetch_env!(:news, :default_params)
      api_key = "&apiKey=#{p["apiKey"]}"
-     default_params = "&sortBy=#{p["publishedAt"]}&language=#{p["language"]}&pageSize=#{p["pageSize"]}"
+     default_params = "&sortBy=#{p["sortBy"]}&language=#{p["language"]}&pageSize=#{p["pageSize"]}"
      base = "#{url_base}q=#{query}&from#{from}"
      "#{base}#{default_params}#{api_key}"
   end
